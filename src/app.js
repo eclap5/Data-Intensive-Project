@@ -19,6 +19,7 @@ app.use('/', router);
 app.use('/eu', EURouter);
 app.use('/na', NArouter);
 app.use('/as', ASrouter);
+
 app.use('/company', companyRouter);
 
 app.listen(port, () => {
