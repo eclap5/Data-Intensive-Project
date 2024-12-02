@@ -2,8 +2,8 @@ import express from 'express';
 
 
 //Call EU database connection
-import connectToEUDatabase from '../databases/continent/euConnect.js';
-import { createContinentTables, populateEUTables } from '../databases/continent/initDBs.js';
+import connectToEUDatabase from '../database/connect/euConnect.js';
+import { createContinentTables, populateEUTables } from '../database/initDBs.js';
 const euClient = await connectToEUDatabase();
 
 //Create EU database tables
