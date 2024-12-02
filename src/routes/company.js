@@ -1,6 +1,6 @@
 import express from 'express';
 import connectToCompanyDatabase from '../database/connect/companyConnect.js';
-import { createCompanyTables, populateCompanyTables } from '../database/initCompanyDB.js';
+import { createCompanyTables } from '../database/initCompanyDB.js';
 
 const companyClient = await connectToCompanyDatabase();
 
