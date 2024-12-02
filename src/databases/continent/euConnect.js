@@ -4,9 +4,10 @@ dotenv.config();
 
 async function connectToEUDatabase() {
     const { Client } = pg;
+    
     const client = new Client({
-        user: process.env.USER,
-        password: process.env.PASSWORD,
+        user: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
         host: 'localhost',
         port: 5432
     });
@@ -26,8 +27,8 @@ async function connectToEUDatabase() {
         await client.end();
 
         const euClient = new Client({
-            user: process.env.USER,
-            password: process.env.PASSWORD,
+            user: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
             host: 'localhost',
             port: 5432,
             database: 'europe'
