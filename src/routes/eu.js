@@ -1,6 +1,5 @@
 import express from 'express';
 
-
 //Call EU database connection
 import connectToEUDatabase from '../database/connect/euConnect.js';
 import createContinentTables from '../database/initDBs.js';
