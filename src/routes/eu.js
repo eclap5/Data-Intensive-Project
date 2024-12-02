@@ -75,7 +75,7 @@ router.post('/:table/:id', async (req, res) => {
     Input: delete to /eu/<tablename>/<id>
     Output: [ { customer } ]
 */
-router.post('/:table/:id', async (req, res) => {
+router.delete('/:table/:id', async (req, res) => {
     const tableName = req.params.table;
     const id = req.params.id;
     try {

@@ -1,0 +1,20 @@
+.row {
+    display: flex;
+    /* Align children horizontally */
+    gap: 10px;
+    /* Add some space between cells */
+}
+
+p {
+    margin: 0;
+    /* Remove default margins for cleaner layout */
+}
+
+.label-row {
+    font-weight: bold;
+    display: flex;
+    gap: 10px;
+    /* Add space between labels */
+    border-bottom: 1px solid #ccc;
+    /* Optional: Underline labels for distinction */
+}

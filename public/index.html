@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Database manager</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
-    
+    <h1>Database Manager </h1>
+    <form action="">
+        <label for="EU">EU</label>
+        <input type="checkbox" name="EU" id="EU">
+        <label for="ASIA">ASIA</label>
+        <input type="checkbox" name="ASIA" id="AS">
+        <label for="NA">NA</label>
+        <input type="checkbox" name="NA" id="NA">
+        <br>
+        <label for="tables">Select table: </label>
+        <select name="table-select" id="table-select">
+            <option value="">-</option>
+            <option value="customers">customers</option>
+            <option value="orders">orders</option>
+            <option value="products">products</option>
+            <option value="returns">returns</option>
+            <option value="warehouses">warehouses</option>
+        </select>
+        <br>
+
+        <br>
+
+    </form>
+    <div id="show-DB"></div>
+
+
+
+
 </body>
+<script src="js/main.js"></script>
+
 </html>
