@@ -1,5 +1,5 @@
 import express from 'express';
-
+import stringifyAndJoin from './stringify.js';
 //Call EU database connection
 import connectToEUDatabase from '../database/connect/euConnect.js';
 import createContinentTables from '../database/initDBs.js';
@@ -41,7 +41,7 @@ router.get('/:table', async (req, res) => {
 });
 
 /*
-    Input: post to /eu/<tablename> with body example in table customers { columns: "location, name", values: "'London', 'John'" }
+    Input: post to /eu/<tablename> with body example in table customers { columns: "location", "name", values: "London", "John" }
     Output: [ { customer } ]
 */
 router.post('/:table', async (req, res) => {
@@ -49,7 +49,7 @@ router.post('/:table', async (req, res) => {
     const { columns, values } = req.body;
     console.log(req.body)
     try {
-        const { rows: Data } = await euClient.query(`INSERT INTO ${tableName} (${columns}) VALUES (${values}) RETURNING *`);
+        const { rows: Data } = await euClient.query(`INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${stringifyAndJoin(values)}) RETURNING *`);
         res.json(Data);
     } catch (err) {
         console.log(err)
@@ -58,7 +58,7 @@ router.post('/:table', async (req, res) => {
 });
 
 /*
-    Input: post to /eu/<tablename>/<id> with body example in table customers { columns: "location", values: "'London'" }
+    Input: post to /eu/<tablename>/<id> with body example in table customers { columns: "location", values: "London" }
     Output: [ { customer } ]
 */
 router.put('/:table/:id', async (req, res) => {
@@ -66,7 +66,7 @@ router.put('/:table/:id', async (req, res) => {
     const id = req.params.id;
     const { columns, values } = req.body;
     try {
-        const { rows: Data } = await euClient.query(`UPDATE ${tableName} SET (${columns}) = (${values}) WHERE ${tableName.slice(0, -1)}id = ${id} RETURNING *`);
+        const { rows: Data } = await euClient.query(`UPDATE ${tableName} SET (${columns.join(', ')}) = (${stringifyAndJoin(values)}) WHERE ${tableName.slice(0, -1)}id = ${id} RETURNING *`);
         res.json(Data);
     } catch (err) {
         res.status(500).send(err);

@@ -1,5 +1,5 @@
 import express from 'express';
-
+import stringifyAndJoin from './stringify.js';
 
 //Call AS database connection
 import connectToASDatabase from '../database/connect/asConnect.js';
@@ -42,14 +42,14 @@ router.get('/:table', async (req, res) => {
 });
 
 /*
-    Input: post to /as/<tablename> with body example in table customers { columns: "location, name", values: "'London', 'John'" }
+    Input: post to /as/<tablename> with body example in table customers { columns: "location", "name", values: "London", "John" }
     Output: [ { customer } ]
 */
 router.post('/:table', async (req, res) => {
     const tableName = req.params.table;
     const { columns, values } = req.body;
     try {
-        const { rows: Data } = await asClient.query(`INSERT INTO ${tableName} (${columns}) VALUES (${values}) RETURNING *`);
+        const { rows: Data } = await asClient.query(`INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${stringifyAndJoin(values)}) RETURNING *`);
         res.json(Data);
     } catch (err) {
         res.status(500).send(err);
@@ -57,7 +57,7 @@ router.post('/:table', async (req, res) => {
 });
 
 /*
-    Input: post to /as/<tablename>/<id> with body example in table customers { columns: "location", values: "'London'" }
+    Input: post to /as/<tablename>/<id> with body example in table customers { columns: "location", values: "London" }
     Output: [ { customer } ]
 */
 router.put('/:table/:id', async (req, res) => {
@@ -65,7 +65,7 @@ router.put('/:table/:id', async (req, res) => {
     const id = req.params.id;
     const { columns, values } = req.body;
     try {
-        const { rows: Data } = await asClient.query(`UPDATE ${tableName} SET (${columns}) = (${values}) WHERE ${tableName.slice(0, -1)}id = ${id} RETURNING *`);
+        const { rows: Data } = await asClient.query(`UPDATE ${tableName} SET (${columns.join(', ')}) = (${stringifyAndJoin(values)}) WHERE ${tableName.slice(0, -1)}id = ${id} RETURNING *`);
         res.json(Data);
     } catch (err) {
         res.status(500).send(err);
