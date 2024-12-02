@@ -59,12 +59,12 @@ router.post('/:table', async (req, res) => {
     Input: post to /eu/<tablename>/<id> with body example in table customers { columns: "location", values: "'London'" }
     Output: [ { customer } ]
 */
-router.post('/:table/:id', async (req, res) => {
+router.put('/:table/:id', async (req, res) => {
     const tableName = req.params.table;
     const id = req.params.id;
     const { columns, values } = req.body;
     try {
-        const { rows: Data } = await euClient.query(`UPDATE ${tableName} SET (${columns}) = (${values}) WHERE id = ${id} RETURNING *`);
+        const { rows: Data } = await euClient.query(`UPDATE ${tableName} SET (${columns}) = (${values}) WHERE ${tableName.slice(0, -1)}id = ${id} RETURNING *`);
         res.json(Data);
     } catch (err) {
         res.status(500).send(err);
@@ -79,9 +79,10 @@ router.delete('/:table/:id', async (req, res) => {
     const tableName = req.params.table;
     const id = req.params.id;
     try {
-        const { rows: Data } = await euClient.query(`DELETE FROM ${tableName} WHERE id = ${id} RETURNING *`);
+        const { rows: Data } = await euClient.query(`DELETE FROM ${tableName} WHERE ${tableName.slice(0, -1)}id = ${id} RETURNING *`);
         res.json(Data);
     } catch (err) {
+        console.log(err)
         res.status(500).send(err);
     }
 });

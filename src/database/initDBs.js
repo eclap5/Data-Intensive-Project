@@ -26,7 +26,9 @@ async function createContinentTables(client) {
                 status VARCHAR(255) NOT NULL CHECK (status IN ('Processing', 'Processed', 'Shipped')),
                 productId INT[] NOT NULL,
                 price FLOAT NOT NULL,
-                FOREIGN KEY (customerId) REFERENCES customers(customerId)
+                FOREIGN KEY (customerId) 
+                REFERENCES customers(customerId)
+                ON DELETE CASCADE
             )
         `);
         console.log('Table "orders" created');
@@ -36,7 +38,9 @@ async function createContinentTables(client) {
                 returnId SERIAL PRIMARY KEY,
                 orderId INT NOT NULL,
                 status VARCHAR(255) NOT NULL CHECK (status IN ('Acknowledged', 'Arrived', 'Refunded')),
-                FOREIGN KEY (orderId) REFERENCES orders(orderId)
+                FOREIGN KEY (orderId) 
+                REFERENCES orders(orderId)
+                ON DELETE CASCADE
             )
         `);
         console.log('Table "returns" created');
@@ -46,7 +50,9 @@ async function createContinentTables(client) {
                 warehouseId SERIAL PRIMARY KEY,
                 location VARCHAR(255) NOT NULL,
                 productId INT NOT NULL,
-                FOREIGN KEY (productId) REFERENCES products(productId)
+                FOREIGN KEY (productId) 
+                REFERENCES products(productId)
+                ON DELETE CASCADE
             )
         `);
         console.log('Table "warehouses" created');
