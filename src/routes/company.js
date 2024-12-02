@@ -23,8 +23,48 @@ function delay(ms) {
 
 const router = express.Router();
 
-router.get('/company', (req, res) => {
-    res.send('Company database');
+router.get('/:table', async (req, res) => {
+    const tableName = req.params.table;
+    try {
+        const { rows: data } = await companyClient.query(`SELECT * FROM ${tableName}`);
+        res.json(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+router.post('/:table', async (req, res) => {
+    const tableName = req.params.table;
+    const { columns, values } = req.body;
+    try {
+        const { rows: data } = await companyClient.query(`INSERT INTO ${tableName} (${columns}) VALUES (${values}) RETURNING *`);
+        res.json(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+router.post('/:table/:id', async (req, res) => {
+    const tableName = req.params.table;
+    const id = req.params.id;
+    const { columns } = req.body;
+    try {
+        const { rows: data } = await companyClient.query(`UPDATE ${tableName} SET ${columns} WHERE id = ${id} RETURNING *`);
+        res.json(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+router.delete('/:table/:id', async (req, res) => {
+    const tableName = req.params.table;
+    const id = req.params.id;
+    try {
+        const { rows: data } = await companyClient.query(`DELETE FROM ${tableName} WHERE id = ${id} RETURNING *`);
+        res.json(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
 export default router;
