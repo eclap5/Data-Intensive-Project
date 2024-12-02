@@ -47,10 +47,12 @@ router.get('/:table', async (req, res) => {
 router.post('/:table', async (req, res) => {
     const tableName = req.params.table;
     const { columns, values } = req.body;
+    console.log(req.body)
     try {
         const { rows: Data } = await euClient.query(`INSERT INTO ${tableName} (${columns}) VALUES (${values}) RETURNING *`);
         res.json(Data);
     } catch (err) {
+        console.log(err)
         res.status(500).send(err);
     }
 });

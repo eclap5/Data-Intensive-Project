@@ -1,16 +1,17 @@
 const tableSelect = document.getElementById('table-select');
 const formFields = document.getElementById('form-fields');
-const dynamicForm = document.getElementById('dynamic-form');
+const modifyFields = document.getElementById('modify');
+
 const EU = document.getElementById('EU');
 const NA = document.getElementById('NA');
 const AS = document.getElementById('AS')
-const getTable = async (region, selectedTable) => {
+const getTable = async (region, selectedTable) => { // fetch table 
     const response = await fetch(`/${region}/${selectedTable}`)
     const data = await response.json()
     console.log(data)
     return data
 }
-const deleteRow = async (region, table, id) => {
+const deleteRow = async (region, table, id) => { // delete clicked row
     try {
         const response = await fetch(`/${region}/${table}/${id}`, {
             method: 'DELETE',
@@ -28,53 +29,105 @@ const deleteRow = async (region, table, id) => {
     }
 };
 
+const insertRow = async (region, selectedTable) => {
+    const inputs = document.querySelectorAll('#modify input'); // get all inputs created
+    const columns = [];
+    const values = [];
+
+    inputs.forEach(input => {
+        columns.push(input.placeholder);  // Use the placeholder as column name
+        values.push(input.value);         // Use the input value as the value for insertion
+    });
+
+    try {
+        const response = await fetch(`/${region}/${selectedTable}`, { // make new row to currently selected table
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ columns, values })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert('Data inserted successfully!');
+            console.log(data);
+        } else {
+            alert('Failed to insert data.');
+        }
+    } catch (error) {
+        console.error('Error inserting data:', error);
+        alert('Error inserting data.');
+    }
+};
+
+
 const printData = (region, selectedTable, tabledata) => {
     const showDiv = document.getElementById('show-DB');
-    const keys = Object.keys(tabledata[0])
-    if (!document.getElementById('Labels')) {
+    const keys = Object.keys(tabledata[0]) // get labels of the table
+    if (!document.getElementById('Labels')) { // if labels are not yet made create them (used when multiple tables are selected)
         const labelRow = document.createElement('div');
         labelRow.classList.add('label-row');
-        labelRow.id = "Labels"; // Corrected to match the ID check
+        labelRow.id = "Labels";
 
         // Create label elements
         keys.forEach(key => {
             const label = document.createElement('p');
             label.classList.add('label');
-            label.innerHTML = key; // Use the key as the label text
+            label.innerHTML = key;
             labelRow.appendChild(label);
         });
 
 
-        showDiv.appendChild(labelRow); // Append the label row to the container
+        showDiv.appendChild(labelRow);
     }
 
 
-    tabledata.forEach(element => {
-        console.log(element[keys[0]])
+    tabledata.forEach(element => { // make new row for each table row
+
         const row = document.createElement('div');
         row.classList.add('row');
+        row.id = `row-${element[keys[0]]}`
         keys.forEach(key => {
-            const p = document.createElement('p');
+            const p = document.createElement('p'); // make p elements for each column in that row
             p.classList.add(key);
             p.innerHTML = element[key];
             row.appendChild(p);
         });
-        row.addEventListener('click', () => {
-            if (confirm(`Are you sure you want to delete row with ID: ${element[keys[0]]}?`)) {
+        row.addEventListener('click', () => { // event listener for deleting the row from DB
+            if (confirm(`Are you sure you want to delete row with ID: ${element[keys[0]]}?`)) { // use browser confirm to ensure right row
                 deleteRow(region, selectedTable, element[keys[0]]);
             }
         });
         showDiv.appendChild(row)
     });
-
+    createInputs(keys, selectedTable, region);
 }
 
 
-tableSelect.addEventListener('change', async () => {
+
+// create inputs for creating data to selected table
+const createInputs = (fields, selectedTable, region) => {
+    modifyFields.textContent = '';  // Clear existing inputs
+
+
+    fields.slice(1).forEach(label => { // first row is primary key (DB creates it)
+        const input = document.createElement('input');
+        input.placeholder = label;
+        modifyFields.append(input);
+    });
+
+    // Create a button to insert data
+    const insertButton = document.createElement('button');
+    insertButton.textContent = 'Insert Data';
+    insertButton.addEventListener('click', () => insertRow(region, selectedTable)); // call insert row function to make post request
+    modifyFields.append(insertButton);
+};
+
+
+
+tableSelect.addEventListener('change', async () => { // event listener for dropdown menu which has tables
     const showDiv = document.getElementById('show-DB');
     showDiv.textContent = '';
     const selectedTable = tableSelect.value;
-    let data = '';
     if (selectedTable == "") {
         return
     }
