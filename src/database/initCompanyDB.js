@@ -1,19 +1,18 @@
 async function createCompanyTables(client) {
     try {
         await client.query(`
-            CREATE TABLE IF NOT EXISTS Difficulty (
-                DifficultyId SERIAL PRIMARY KEY,
-                Salary FLOAT
+            CREATE TABLE IF NOT EXISTS Salary (
+                SalaryId SERIAL PRIMARY KEY,
+                Amount FLOAT
             );
         `);
-        console.log('Table "Difficulty" created');
+        console.log('Table "Salary" created');
 
         await client.query(`
             CREATE TABLE IF NOT EXISTS Title (
                 TitleId SERIAL PRIMARY KEY,
                 Name VARCHAR(255) NOT NULL,
-                DifficultyId INT REFERENCES Difficulty(DifficultyId),
-                Salary FLOAT
+                SalaryId INT REFERENCES Salary(SalaryId)
             );
         `);
         console.log('Table "Title" created or exists');
@@ -23,7 +22,7 @@ async function createCompanyTables(client) {
                 PersonId SERIAL PRIMARY KEY,
                 Name VARCHAR(255) NOT NULL,
                 TitleId INT REFERENCES Title(TitleId),
-                Location FLOAT
+                Location VARCHAR(255) NOT NULL
             );
         `);
         console.log('Table "Personal" created or exists');
