@@ -4,7 +4,7 @@ import express from 'express';
 //Call NA database connection
 import connectToNADatabase from '../database/connect/naConnect.js';
 import createContinentTables from '../database/initDBs.js';
-import populateNATables from '../database/populateNA.js';
+import { populateNATables } from '../database/populate/populateNA.js';
 const naClient = await connectToNADatabase();
 
 //Create NA database tables
@@ -31,7 +31,7 @@ const router = express.Router();
  Input: get to /na/<tablename>
  Output: [ { customer }, { customer }, ... ]
 */
-router.get('/na/:table', async (req, res) => {
+router.get('/:table', async (req, res) => {
     const tableName = req.params.table;
     try {
         const { rows: Data } = await naClient.query(`SELECT * FROM ${tableName}`);
@@ -45,7 +45,7 @@ router.get('/na/:table', async (req, res) => {
     Input: post to /na/<tablename> with body example in table customers { columns: "location, name", values: "'London', 'John'" }
     Output: [ { customer } ]
 */
-router.post('/na/:table', async (req, res) => {
+router.post('/:table', async (req, res) => {
     const tableName = req.params.table;
     const { columns, values } = req.body;
     try {
@@ -60,7 +60,7 @@ router.post('/na/:table', async (req, res) => {
     Input: post to /na/<tablename>/<id> with body example in table customers { columns: "location", values: "'London'" }
     Output: [ { customer } ]
 */
-router.post('/na/:table/:id', async (req, res) => {
+router.post('/:table/:id', async (req, res) => {
     const tableName = req.params.table;
     const id = req.params.id;
     const { columns, values } = req.body;
@@ -76,7 +76,7 @@ router.post('/na/:table/:id', async (req, res) => {
     Input: delete to /na/<tablename>/<id>
     Output: [ { customer } ]
 */
-router.post('/na/:table/:id', async (req, res) => {
+router.post('/:table/:id', async (req, res) => {
     const tableName = req.params.table;
     const id = req.params.id;
     try {

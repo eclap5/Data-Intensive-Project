@@ -4,7 +4,7 @@ import express from 'express';
 //Call AS database connection
 import connectToASDatabase from '../database/connect/asConnect.js';
 import createContinentTables from '../database/initDBs.js';
-import populateASTables from '../database/populateAS.js';
+import { populateASTables } from '../database/populate/populateAS.js';
 const asClient = await connectToASDatabase();
 
 //Create AS database tables
@@ -31,7 +31,7 @@ const router = express.Router();
  Input: get to /as/<tablename>
  Output: [ { customer }, { customer }, ... ]
 */
-router.get('/as/:table', async (req, res) => {
+router.get('/:table', async (req, res) => {
     const tableName = req.params.table;
     try {
         const { rows: Data } = await asClient.query(`SELECT * FROM ${tableName}`);
@@ -45,7 +45,7 @@ router.get('/as/:table', async (req, res) => {
     Input: post to /as/<tablename> with body example in table customers { columns: "location, name", values: "'London', 'John'" }
     Output: [ { customer } ]
 */
-router.post('/as/:table', async (req, res) => {
+router.post('/:table', async (req, res) => {
     const tableName = req.params.table;
     const { columns, values } = req.body;
     try {
@@ -60,7 +60,7 @@ router.post('/as/:table', async (req, res) => {
     Input: post to /as/<tablename>/<id> with body example in table customers { columns: "location", values: "'London'" }
     Output: [ { customer } ]
 */
-router.post('/as/:table/:id', async (req, res) => {
+router.post('/:table/:id', async (req, res) => {
     const tableName = req.params.table;
     const id = req.params.id;
     const { columns, values } = req.body;
@@ -76,7 +76,7 @@ router.post('/as/:table/:id', async (req, res) => {
     Input: delete to /as/<tablename>/<id>
     Output: [ { customer } ]
 */
-router.post('/as/:table/:id', async (req, res) => {
+router.post('/:table/:id', async (req, res) => {
     const tableName = req.params.table;
     const id = req.params.id;
     try {
