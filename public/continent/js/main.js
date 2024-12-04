@@ -1,6 +1,7 @@
 const tableSelect = document.getElementById('table-select');
 const formFields = document.getElementById('form-fields');
 const modifyFields = document.getElementById('modify');
+const showDiv = document.getElementById('show-DB');
 
 const EU = document.getElementById('EU');
 const NA = document.getElementById('NA');
@@ -57,7 +58,7 @@ const insertRow = async (region, selectedTable) => {
         console.error('Error inserting data:', error);
         alert('Error inserting data.');
     }
-
+    showDiv.textContent = ''; // clear existing data
     printData(region, selectedTable, await getTable(region, selectedTable));
 };
 
@@ -90,15 +91,14 @@ const updateRow = async (region, selectedTable) => {
         console.error('Error inserting data:', error);
         alert('Error inserting data.');
     }
-
+    showDiv.textContent = ''; // clear existing data
     printData(region, selectedTable, await getTable(region, selectedTable));
 };
 
 
 const printData = (region, selectedTable, tabledata) => {
-    const showDiv = document.getElementById('show-DB');
     const keys = Object.keys(tabledata[0]) // get labels of the table
-    showDiv.textContent = ''; // clear existing data
+   
     if (!document.getElementById('Labels')) { // if labels are not yet made create them (used when multiple tables are selected)
         const labelRow = document.createElement('div');
         labelRow.classList.add('label-row');
