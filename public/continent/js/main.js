@@ -57,6 +57,8 @@ const insertRow = async (region, selectedTable) => {
         console.error('Error inserting data:', error);
         alert('Error inserting data.');
     }
+
+    printData(region, selectedTable, await getTable(region, selectedTable));
 };
 
 const updateRow = async (region, selectedTable) => {
@@ -88,12 +90,15 @@ const updateRow = async (region, selectedTable) => {
         console.error('Error inserting data:', error);
         alert('Error inserting data.');
     }
+
+    printData(region, selectedTable, await getTable(region, selectedTable));
 };
 
 
 const printData = (region, selectedTable, tabledata) => {
     const showDiv = document.getElementById('show-DB');
     const keys = Object.keys(tabledata[0]) // get labels of the table
+    showDiv.textContent = ''; // clear existing data
     if (!document.getElementById('Labels')) { // if labels are not yet made create them (used when multiple tables are selected)
         const labelRow = document.createElement('div');
         labelRow.classList.add('label-row');
@@ -140,6 +145,7 @@ const createInputs = (fields, selectedTable, region) => {
 
     fields.forEach(label => {
         const input = document.createElement('input');
+        input.classList.add('input');
         input.placeholder = label;
         modifyFields.append(input);
     });
@@ -149,7 +155,12 @@ const createInputs = (fields, selectedTable, region) => {
     text.textContent = "ID(first input) is only used for updating rows"
     const insertButton = document.createElement('button');
     insertButton.textContent = 'Insert Data';
-    insertButton.addEventListener('click', () => insertRow(region, selectedTable)); // call insert row function to make post request
+    
+    insertButton.addEventListener('click', () => {
+        insertRow(region, selectedTable);
+        document.querySelectorAll('#input input').forEach(input => input.value = '');
+    }); // call insert row function to make post request
+    
     const updateButton = document.createElement('button');
     updateButton.textContent = "Update row";
     updateButton.addEventListener('click', () => updateRow(region, selectedTable))
